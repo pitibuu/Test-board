@@ -33,10 +33,10 @@ getgenv().Settings = {
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local Window = Rayfield:CreateWindow({
-	Name = "Chess Club",
+	Name = "Chess club",
 	Icon = 0,
-	LoadingTitle = "Chess Club - Auto Play",
-	LoadingSubtitle = "by Shrx",
+	LoadingTitle = "Chess club - Otomasyon",
+	LoadingSubtitle = "Mei wu",
 	Theme = "Default",
 	ToggleUIKeybind = "K",
 	DisableRayfieldPrompts = false,
@@ -67,13 +67,11 @@ function BestMove(engine)
 
 		if success and res and res.Success then
 			local data = HttpService:JSONDecode(res.Body)
-
 			
 			return data.from, data.to
-
 			
 		else
-			warn("[Engine] Stockfish request failed:", err or res.StatusCode or "Unknown error")
+			warn("[Motor] Stockfish isteği başarısız oldu:", err or res.StatusCode or "Bilinmeyen hata")
 		end
 
 	elseif selected == "Sunfish" then
@@ -85,10 +83,9 @@ function BestMove(engine)
 		if ok and result then
 			return result
 		else
-			warn("[Engine] Sunfish engine failed:", result)
+			warn("[Motor] Sunfish motoru başarısız oldu:", result)
 		end
 	end
-
 end
 
 function PlayMove(engine)
@@ -101,7 +98,7 @@ function PlayMove(engine)
 	elseif from then
 		game:GetService("ReplicatedStorage").Chess.SubmitMove:InvokeServer(from)
 	else
-		warn("[Move] Invalid move received. Cannot play.")
+		warn("[Hamle] Geçersiz hamle alındı. Oynatılamaz.")
 		return false
 	end
 
@@ -125,8 +122,8 @@ function PlaySuccesfullMove()
 			PlayMove("Sunfish")
 
 			Rayfield:Notify({
-				Title = "Warning!",
-				Content = "The current engine API is unresponsive. Using Sunfish engine for this move. Consider switching APIs if warning persists!",
+				Title = "Uyarı!",
+				Content = "Mevcut motor API'si yanıt vermiyor. Bu hamle için Sunfish motoru kullanılıyor. Uyarı devam ederse API'leri değiştirmeyi düşünün!",
 				Duration = 5,
 				Image = "triangle-alert",
 			})
@@ -148,12 +145,12 @@ function AutoPlay()
 	PlaySuccesfullMove()
 end
 
-local MainTab = Window:CreateTab("Main", "code-xml")
+local MainTab = Window:CreateTab("Ana", "code-xml")
 
-MainTab:CreateSection("Select Engine API")
+MainTab:CreateSection("Motor API'sini Seç")
 
 SelectedEngine = MainTab:CreateDropdown({
-	Name = "Engine API",
+	Name = "Motor API'si",
 	Options = getgenv().Info.EngineOptions,
 	CurrentOption = getgenv().Settings.Engine,
 	MultipleOptions = false,
@@ -163,10 +160,10 @@ SelectedEngine = MainTab:CreateDropdown({
 	end,
 })
 
-MainTab:CreateSection("Play Best Move")
+MainTab:CreateSection("En İyi Hamleyi Oyna")
 
 local AutoBestMove = MainTab:CreateToggle({
-	Name = "Auto Play Best Moves",
+	Name = "En İyi Hamleleri Otomatik Oynat",
 	CurrentValue = false,
 	Flag = "AutoBestMove",
 	Callback = function(Value)
@@ -180,7 +177,7 @@ local AutoBestMove = MainTab:CreateToggle({
 })
 
 local PlayBestMove = MainTab:CreateButton({
-	Name = "Play Best Move",
+	Name = "En İyi Hamleyi Oyna",
 	Callback = function()
 		PlayMove()
 	end,
