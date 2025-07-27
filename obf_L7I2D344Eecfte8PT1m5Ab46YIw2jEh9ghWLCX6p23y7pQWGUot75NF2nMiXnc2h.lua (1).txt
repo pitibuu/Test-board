@@ -1,0 +1,102 @@
+                                                                                 local Players=game:   
+                                                                        GetService("Players");local UserInputService=   
+                                                                    game:GetService("UserInputService");local RunService=game:    
+                                                                GetService("RunService");local LocalPlayer=Players.LocalPlayer;local    
+                                                            iyflyspeed=1;local vehicleflyspeed=1;local FLYING=false;local                 
+                                                          flyKeyDownConnection;local flyKeyUpConnection;local mfly1;local mfly2;local       
+                                                        function getRoot(character) if (character and character:FindFirstChild(               
+                                                      "HumanoidRootPart")) then return character.HumanoidRootPart;end return nil;end local      
+                                                    function sFLY(vfly) local success,message=pcall(function() local character=LocalPlayer.       
+                                                  Character or LocalPlayer.CharacterAdded:Wait() ;local humanoid=character:FindFirstChildOfClass(   
+                                                  "Humanoid");local rootPart=getRoot(character);if  not (character and humanoid and rootPart) then    
+                                                warn("Karakter veya HumanoidRootPart bulunamadı.");return;end if flyKeyDownConnection then              
+                                                flyKeyDownConnection:Disconnect();end if flyKeyUpConnection then flyKeyUpConnection:Disconnect();end      
+                                              local T=rootPart;local CONTROL={F=0,B=0,L=0,R=0,Q=0,E=0};local lCONTROL={F=0,B=0,L=0,R=0,Q=0,E=0};local       
+                                              SPEED_MULTIPLIER=(vfly and vehicleflyspeed) or iyflyspeed ;FLYING=true;local BG=Instance.new("BodyGyro");     
+                                            local BV=Instance.new("BodyVelocity");BG.P=90000;BG.Parent=T;BV.Parent=T;BG.maxTorque=Vector3.new(8999999488,     
+                                            8999999488,8999999488);BG.cframe=T.CFrame;BV.velocity=Vector3.new(0,0,0);BV.maxForce=Vector3.new(8999999488,        
+                                          8999999488,8999999488);task.spawn(function() while FLYING do task.wait();if ( not vfly and humanoid) then humanoid.     
+                                          PlatformStand=true;end local currentMovementSpeed=SPEED_MULTIPLIER * 50 ;if (((CONTROL.L + CONTROL.R)==0) and ((CONTROL.F 
+                                           + CONTROL.B)==0) and ((CONTROL.Q + CONTROL.E)==0)) then currentMovementSpeed=0;end if (((CONTROL.L + CONTROL.R)~=0) or ((  
+                                          CONTROL.F + CONTROL.B)~=0) or ((CONTROL.Q + CONTROL.E)~=0)) then BV.velocity=((workspace.CurrentCamera.CoordinateFrame.     
+                                        lookVector * (CONTROL.F + CONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(CONTROL.L + CONTROL.R ,(CONTROL. 
+                                        F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2 ,0).p) -workspace.       --[[==============================]]CurrentCamera.          
+                                        CoordinateFrame.p)) * currentMovementSpeed ;lCONTROL={F=    --[[============================================]]CONTROL.F,B=CONTROL 
+                                        .B,L=CONTROL.L,R=CONTROL.R};elseif (((CONTROL.L +       --[[======================================================]]CONTROL.R)==0)  
+                                      and ((CONTROL.F + CONTROL.B)==0) and ((CONTROL.Q +    --[[==========================================================]]CONTROL.E)==0)    
+                                      and (currentMovementSpeed~=0)) then BV.velocity=    --[[==============================================================]]Vector3.new(0,0 
+                                      ,0);else BV.velocity=Vector3.new(0,0,0);end BG.     --[[================================================================]]cframe=         
+                                      workspace.CurrentCamera.CoordinateFrame;end CONTROL --[[==================================================================]]={F=0,B=0,L=0 
+                                      ,R=0,Q=0,E=0};lCONTROL={F=0,B=0,L=0,R=0,Q=0,E=0};if --[[==================================================================]] BG.Parent then   
+                                     BG:Destroy();end if BV.Parent then BV:Destroy();end  --[[====================================================================]]if humanoid   
+                    then humanoid.PlatformStand=false;end end);flyKeyDownConnection=      --[[====================================================================]]                
+              UserInputService.InputBegan:Connect(function(input,gameProcessed) if        --[[======================================================================]]gameProcessed 
+             then return;end local KEY=input.KeyCode.Name:lower();local                   --[[======================================================================]]              
+          currentSpeedMultiplier=1;if (KEY=="w") then CONTROL.F=currentSpeedMultiplier;   --[[======================================================================]]elseif (KEY== 
+        "s") then CONTROL.B= -currentSpeedMultiplier;elseif (KEY=="a") then CONTROL.L= -  --[[======================================================================]]              
+        currentSpeedMultiplier;elseif (KEY=="d") then CONTROL.R=currentSpeedMultiplier;   --[[======================================================================]]end pcall(    
+      function() workspace.CurrentCamera.CameraType=Enum.CameraType.Track;end);end);      --[[======================================================================]]              
+      flyKeyUpConnection=UserInputService.InputEnded:Connect(function(input,gameProcessed)  --[[==================================================================]]if              
+      gameProcessed then return;end local KEY=input.KeyCode.Name:lower();if (KEY=="w") then --[[================================================================]] CONTROL.F=0;     
+    elseif (KEY=="s") then CONTROL.B=0;elseif (KEY=="a") then CONTROL.L=0;elseif (KEY=="d") --[[==============================================================]] then CONTROL.R=0 
+    ;end end);end);if  not success then warn("sFLY fonksiyonu hatası: "   .. message );end    --[[==========================================================]]end local function  
+    NOFLY() local success,message=pcall(function() FLYING=false;if flyKeyDownConnection then    --[[====================================================]]flyKeyDownConnection:   
+    Disconnect();end if flyKeyUpConnection then flyKeyUpConnection:Disconnect();end if (          --[[==============================================]]LocalPlayer.Character and 
+     LocalPlayer.Character:FindFirstChildOfClass("Humanoid")) then LocalPlayer.Character:             --[[====================================]]FindFirstChildOfClass(        
+    "Humanoid").PlatformStand=false;end pcall(function() workspace.CurrentCamera.CameraType=Enum.         --[[========================]]CameraType.Custom;end);end);if  not   
+    success then warn("NOFLY fonksiyonu hatası: "   .. message );end end local velocityHandlerName="VelocityHandler"   .. math.random(1000,9999) ;local gyroHandlerName=    
+  "GyroHandler"   .. math.random(1000,9999) ;local function unmobilefly(speaker) local success,message=pcall(function() FLYING=false;local root=getRoot(speaker.Character 
+  );if (root and root:FindFirstChild(velocityHandlerName)) then root:FindFirstChild(velocityHandlerName):Destroy();end if (root and root:FindFirstChild(gyroHandlerName 
+  )) then root:FindFirstChild(gyroHandlerName):Destroy();end if (speaker.Character and speaker.Character:FindFirstChildWhichIsA("Humanoid")) then speaker.Character:      
+  FindFirstChildWhichIsA("Humanoid").PlatformStand=false;end if mfly1 then mfly1:Disconnect();end if mfly2 then mfly2:Disconnect();end end);if  not success then warn(    
+  "unmobilefly fonksiyonu hatası: "   .. message );end end local function mobilefly(speaker,vfly) local success,message=pcall(function() unmobilefly(speaker);FLYING=true 
+  ;local root=getRoot(speaker.Character);local camera=workspace.CurrentCamera;local v3none=Vector3.new();local v3zero=Vector3.new(0,0,0);local v3inf=Vector3.new(         
+  8999999488,8999999488,8999999488);local controlModule;local loaded,module=pcall(function() return require(speaker.PlayerScripts:WaitForChild("PlayerModule"):           
+  WaitForChild("ControlModule"));end);if loaded then controlModule=module;else warn("ControlModule yüklenemedi: "   .. module );return;end local bv=Instance.new(         
+  "BodyVelocity");bv.Name=velocityHandlerName;bv.Parent=root;bv.MaxForce=v3zero;bv.Velocity=v3zero;local bg=Instance.new("BodyGyro");bg.Name=gyroHandlerName;bg.Parent=   
+  root;bg.MaxTorque=v3inf;bg.P=1000;bg.D=50;mfly1=speaker.CharacterAdded:Connect(function(char) pcall(function() local newRoot=getRoot(char);if  not newRoot then return; 
+  end local newBv=Instance.new("BodyVelocity");newBv.Name=velocityHandlerName;newBv.Parent=newRoot;newBv.MaxForce=v3zero;newBv.Velocity=v3zero;local newBg=Instance.new(  
+  "BodyGyro");newBg.Name=gyroHandlerName;newBg.Parent=newRoot;newBg.MaxTorque=v3inf;newBg.P=1000;newBg.D=50;end);end);mfly2=RunService.RenderStepped:Connect(function()     
+  pcall(function() root=getRoot(speaker.Character);camera=workspace.CurrentCamera;if (speaker.Character and speaker.Character:FindFirstChildWhichIsA("Humanoid") and root   
+  and root:FindFirstChild(velocityHandlerName) and root:FindFirstChild(gyroHandlerName)) then local humanoid=speaker.Character:FindFirstChildWhichIsA("Humanoid");local     
+  VelocityHandler=root:FindFirstChild(velocityHandlerName);local GyroHandler=root:FindFirstChild(gyroHandlerName);VelocityHandler.MaxForce=v3inf;GyroHandler.MaxTorque=     
+  v3inf;if  not vfly then humanoid.PlatformStand=true;end GyroHandler.CFrame=camera.CoordinateFrame;VelocityHandler.Velocity=v3none;if controlModule then local direction=  
+  controlModule:GetMoveVector();local currentSpeed=((vfly and vehicleflyspeed) or iyflyspeed) * 50 ;if (direction.X>0) then VelocityHandler.Velocity=VelocityHandler.       
+  Velocity + (camera.CFrame.RightVector * direction.X * currentSpeed) ;end if (direction.X<0) then VelocityHandler.Velocity=VelocityHandler.Velocity + (camera.CFrame.      
+  RightVector * direction.X * currentSpeed) ;end if (direction.Z>0) then VelocityHandler.Velocity=VelocityHandler.Velocity-(camera.CFrame.LookVector * direction.Z *        
+  currentSpeed) ;end if (direction.Z<0) then VelocityHandler.Velocity=VelocityHandler.Velocity-(camera.CFrame.LookVector * direction.Z * currentSpeed) ;end end end end);   
+  end);end);if  not success then warn("mobilefly fonksiyonu hatası: "   .. message );end end local function toggleFlyFunc(vfly) pcall(function() if FLYING then NOFLY();    
+  unmobilefly(LocalPlayer);else mobilefly(LocalPlayer,vfly);end end);end local ScreenGui=Instance.new("ScreenGui");ScreenGui.Name="FlyMenuUI";ScreenGui.Parent=LocalPlayer: 
+  WaitForChild("PlayerGui");ScreenGui.ResetOnSpawn=false;local MainFrame=Instance.new("Frame");MainFrame.Name="FlyPanel";MainFrame.Size=UDim2.new(0,250,0,150);MainFrame.   
+  Position=UDim2.new(0.5, -125,0.5, -75);MainFrame.BackgroundColor3=Color3.fromRGB(30,30,30);MainFrame.BackgroundTransparency=0.1;MainFrame.BorderSizePixel=0;MainFrame.    
+  Parent=ScreenGui;local UICorner=Instance.new("UICorner");UICorner.CornerRadius=UDim.new(0,15);UICorner.Parent=MainFrame;local Header=Instance.new("Frame");Header.Name= 
+  "Header";Header.Size=UDim2.new(1,0,0,40);Header.Position=UDim2.new(0,0,0,0);Header.BackgroundColor3=Color3.fromRGB(50,50,50);Header.BorderSizePixel=0;Header.Parent=    
+  MainFrame;local UICornerHeader=Instance.new("UICorner");UICornerHeader.CornerRadius=UDim.new(0,15);UICornerHeader.Parent=Header;local HeaderText=Instance.new(          
+    "TextLabel");HeaderText.Name="HeaderText";HeaderText.Size=UDim2.new(1, -20,1,0);HeaderText.Position=UDim2.new(0,10,0,0);HeaderText.Text="Discord @Mei_wu.";HeaderText 
+    .Font=Enum.Font.GothamBold;HeaderText.TextSize=18;HeaderText.TextColor3=Color3.fromRGB(255,255,255);HeaderText.BackgroundTransparency=1;HeaderText.TextXAlignment=    
+    Enum.TextXAlignment.Left;HeaderText.Parent=Header;local CloseButton=Instance.new("TextButton");CloseButton.Name="CloseButton";CloseButton.Size=UDim2.new(0,30,0,30);  
+    CloseButton.Position=UDim2.new(1, -35,0,5);CloseButton.BackgroundColor3=Color3.fromRGB(255,50,50);CloseButton.Text="X";CloseButton.Font=Enum.Font.GothamBold;         
+      CloseButton.TextSize=16;CloseButton.TextColor3=Color3.fromRGB(255,255,255);CloseButton.BorderSizePixel=0;CloseButton.Parent=Header;local UICornerClose=Instance.  
+      new("UICorner");UICornerClose.CornerRadius=UDim.new(0,15);UICornerClose.Parent=CloseButton;CloseButton.MouseButton1Click:Connect(function() MainFrame.Visible=    
+      false;end);local dragging;local dragInput;local dragStart;Header.InputBegan:Connect(function(input) if ((input.UserInputType==Enum.UserInputType.MouseButton1) or 
+         (input.UserInputType==Enum.UserInputType.Touch)) then dragging=true;dragStart=input.Position;MainFrame:SetZIndex(10);end end);UserInputService.InputChanged:   
+        Connect(function(input) if (dragging and ((input.UserInputType==Enum.UserInputType.MouseButton1) or (input.UserInputType==Enum.UserInputType.Touch))) then      
+        local delta=input.Position-dragStart ;MainFrame.Position=UDim2.new(MainFrame.Position.X.Scale,MainFrame.Position.X.Offset + delta.X ,MainFrame.Position.Y.Scale 
+          ,MainFrame.Position.Y.Offset + delta.Y );dragStart=input.Position;end end);UserInputService.InputEnded:Connect(function(input) if (((input.UserInputType==  
+            Enum.UserInputType.MouseButton1) or (input.UserInputType==Enum.UserInputType.Touch)) and dragging) then dragging=false;end end);local ButtonScrollFrame=  
+              Instance.new("ScrollingFrame");ButtonScrollFrame.Name="ButtonContainer";ButtonScrollFrame.Size=UDim2.new(1, -20,1, -50);ButtonScrollFrame.Position=     
+                UDim2.new(0,10,0,45);ButtonScrollFrame.BackgroundColor3=Color3.fromRGB(40,40,40);ButtonScrollFrame.BackgroundTransparency=0.5;ButtonScrollFrame.      
+                  BorderSizePixel=0;ButtonScrollFrame.Parent=MainFrame;ButtonScrollFrame.CanvasSize=UDim2.new(0,0,0,0);ButtonScrollFrame.ScrollBarImageColor3=      
+                      Color3.fromRGB(90,90,90);ButtonScrollFrame.ScrollingDirection=Enum.ScrollingDirection.Y;local UIListLayout=Instance.new("UIListLayout");      
+                                  UIListLayout.Padding=UDim.new(0,10);UIListLayout.HorizontalAlignment=Enum.HorizontalAlignment.Center;UIListLayout.                
+                                      VerticalAlignment=Enum.VerticalAlignment.Top;UIListLayout.Parent=ButtonScrollFrame;local UIPadding=Instance.new("UIPadding"); 
+                                      UIPadding.PaddingTop=UDim.new(0,10);UIPadding.PaddingBottom=          UDim.new(0,10);UIPadding.PaddingLeft=UDim.new(0,10);    
+                                      UIPadding.PaddingRight=UDim.new(0,10);UIPadding.Parent=               ButtonScrollFrame;local function createButton(name,   
+                                      text,onClick) local Button=Instance.new("TextButton");Button.         Name=name;Button.Size=UDim2.new(1, -20,0,40);Button.  
+                                      BackgroundColor3=Color3.fromRGB(70,70,70);Button.Text=text;           Button.Font=Enum.Font.Gotham;Button.TextSize=16;      
+                                      Button.TextColor3=Color3.fromRGB(255,255,255);Button.                   BorderSizePixel=0;Button.Parent=ButtonScrollFrame;  
+                                      local UICornerBtn=Instance.new("UICorner");UICornerBtn.                 CornerRadius=UDim.new(0,10);UICornerBtn.Parent=     
+                                      Button;Button.MouseButton1Click:Connect(onClick);return                 Button;end createButton("FlyButton","Fly",        
+                                        function() toggleFlyFunc(false);end);createButton(                    "VFlyButton","VFly",function() toggleFlyFunc(true 
+                                        );end);ButtonScrollFrame.CanvasSize=UDim2.new(0,0,0,                    UIListLayout.AbsoluteContentSize.Y + UIPadding. 
+                                        PaddingTop.Offset + UIPadding.PaddingBottom.Offset );                   MainFrame.Visible=true;
